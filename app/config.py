@@ -1,10 +1,13 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # 数据库
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/hotsite.db")
 
-# AI API 配置（部署时改成你自己的）
-AI_API_KEY = os.getenv("AI_API_KEY", "sk-your-api-key-here")
+# AI API 配置（从 .env 读取，不提交到 GitHub）
+AI_API_KEY = os.getenv("AI_API_KEY", "")
 AI_API_URL = os.getenv("AI_API_URL", "https://api.deepseek.com/v1")
 AI_MODEL = os.getenv("AI_MODEL", "deepseek-chat")
 
