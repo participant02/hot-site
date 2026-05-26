@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录 - 热点快讯</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="login-page">
+        <form class="login-box" method="post" action="/admin">
+            <h2>管理员登录</h2>
+            {% if error %}
+            <p class="error-msg">{{ error }}</p>
+            {% endif %}
+            <input type="password" name="password" placeholder="请输入管理密码" required>
+            <button type="submit">登录</button>
+        </form>
+    </div>
+</body>
+</html>

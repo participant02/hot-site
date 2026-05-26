@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ site_name }} - {{ site_desc }}{% endblock %}
+{% block content %}
+
+<!-- 推荐关键词 -->
+{% if hot_keywords %}
+<div class="hot-tags">
+    <span class="tag-label">🔥 热门话题：</span>
+    {% for kw in hot_keywords %}
+    <a href="/admin/generate?topic={{ kw.keyword }}" class="tag">{{ kw.keyword }}</a>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- 文章列表 -->
+<div class="article-list">
+    {% if articles %}
+        {% for article in articles %}
+        <article class="article-card">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <a href="/article/{{ article.id }}">{{ article.title }}</a>
+                </h2>
+                {% if article.summary %}
+                <p class="card-summary">{{ article.summary }}</p>
+                {% endif %}
+                <div class="card-meta">
+                    <span class="meta-cat">{{ article.category }}</span>
+                    <span>{{ article.published_at.strftime('%Y-%m-%d %H:%M') if article.published_at else '' }}</span>
+                    <span>👁 {{ article.view_count }}</span>
+                    {% if article.keywords %}
+                    <span class="card-keywords">{{ article.keywords }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <h2>还没有文章</h2>
+            <p>去 <a href="/admin/generate">管理后台</a> 生成第一篇文章吧！</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

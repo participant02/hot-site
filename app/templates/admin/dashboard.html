@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}管理后台 - {{ site_name }}{% endblock %}
+{% block content %}
+
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <h3>⚙ 管理后台</h3>
+        <a href="/admin/dashboard" class="active">📊 总览</a>
+        <a href="/admin/articles">📝 文章管理</a>
+        <a href="/admin/generate">✍️ 生成文章</a>
+        <a href="/admin/keywords">🔑 选词器</a>
+        <a href="/">🏠 返回首页</a>
+    </aside>
+
+    <div class="admin-main">
+        <h2>总览</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-num">{{ total }}</div>
+                <div class="stat-label">总文章</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-num">{{ published }}</div>
+                <div class="stat-label">已发布</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-num">{{ draft }}</div>
+                <div class="stat-label">草稿</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">{{ total_views }}</div>
+                <div class="stat-label">总阅读量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">{{ ai_count }}</div>
+                <div class="stat-label">AI 生成</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">{{ keywords_count }}</div>
+                <div class="stat-label">关键词库</div>
+            </div>
+        </div>
+
+        <h3>近期文章</h3>
+        <table class="admin-table">
+            <tr><th>标题</th><th>状态</th><th>阅读</th><th>时间</th></tr>
+            {% for a in recent %}
+            <tr>
+                <td><a href="/article/{{ a.id }}" target="_blank">{{ a.title[:40] }}{% if a.title|length > 40 %}...{% endif %}</a></td>
+                <td>{{ '✅ 已发布' if a.status == 'published' else '📝 草稿' }}</td>
+                <td>{{ a.view_count }}</td>
+                <td>{{ a.created_at.strftime('%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h3>🔥 热门关键词</h3>
+        <div class="kw-list">
+            {% for kw in hot_kws %}
+            <span class="tag">{{ kw.keyword }} <small>({{ kw.hot_score }})</small></span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

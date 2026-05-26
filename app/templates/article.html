@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} - {{ site_name }}{% endblock %}
+{% block head %}
+<meta name="description" content="{{ article.summary or article.title }}">
+<meta name="keywords" content="{{ article.keywords }}">
+{% endblock %}
+{% block content %}
+
+<div class="article-detail">
+    <h1 class="detail-title">{{ article.title }}</h1>
+
+    <div class="detail-meta">
+        <span>{{ article.category }}</span>
+        <span>{{ article.published_at.strftime('%Y-%m-%d %H:%M') if article.published_at else '' }}</span>
+        <span>👁 {{ article.view_count }} 次阅读</span>
+        {% if article.keywords %}
+        <div class="detail-tags">
+            {% for kw in article.keywords.split(',') %}
+            <span class="tag">{{ kw.strip() }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 文中广告 -->
+    {% if baidu_ad %}
+    <div class="ad-inline">{{ baidu_ad|safe }}</div>
+    {% endif %}
+
+    <div class="detail-content">
+        {% for paragraph in article.content.split('\n\n') %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+    </div>
+
+    <!-- 文末广告 -->
+    {% if google_ad %}
+    <div class="ad-footer">{{ google_ad|safe }}</div>
+    {% endif %}
+</div>
+
+<!-- 推荐文章 -->
+{% if related %}
+<div class="related-section">
+    <h3>📌 推荐阅读</h3>
+    <div class="related-grid">
+        {% for r in related %}
+        <a href="/article/{{ r.id }}" class="related-item">
+            <h4>{{ r.title }}</h4>
+            <span>{{ r.published_at.strftime('%Y-%m-%d') if r.published_at else '' }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

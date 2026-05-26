@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}生成文章 - {{ site_name }}{% endblock %}
+{% block content %}
+
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <h3>⚙ 管理后台</h3>
+        <a href="/admin/dashboard">📊 总览</a>
+        <a href="/admin/articles">📝 文章管理</a>
+        <a href="/admin/generate" class="active">✍️ 生成文章</a>
+        <a href="/admin/keywords">🔑 选词器</a>
+        <a href="/">🏠 返回首页</a>
+    </aside>
+
+    <div class="admin-main">
+        {% if message %}
+        <div class="alert">{{ message|safe }}</div>
+        {% endif %}
+
+        <h2>🔥 生成文章</h2>
+
+        <div class="gen-grid">
+            <!-- 单篇生成 -->
+            <div class="gen-card">
+                <h3>单篇生成</h3>
+                <form method="post" action="/admin/generate">
+                    <label>主题关键词</label>
+                    <input type="text" name="topic" placeholder="例如：房价下跌、高考改革" required>
+
+                    <label>写作风格</label>
+                    <select name="style">
+                        <option value="焦虑" selected>😨 焦虑风（制造紧迫感）</option>
+                        <option value="争议">⚡ 争议风（挑动讨论）</option>
+                        <option value="中立">📰 中立风（客观报道）</option>
+                        <option value="科普">📖 科普风（涨知识）</option>
+                    </select>
+
+                    <label>
+                        <input type="checkbox" name="auto_publish" value="true">
+                        生成后直接发布
+                    </label>
+
+                    <button type="submit">🚀 生成文章</button>
+                </form>
+            </div>
+
+            <!-- 批量生成 -->
+            <div class="gen-card">
+                <h3>批量生成</h3>
+                <form method="post" action="/admin/batch-generate">
+                    <label>多个主题（每行一个）</label>
+                    <textarea name="topics" rows="8" placeholder="房价下跌&#10;高考改革新政策&#10;医保报销变化&#10;养老金上涨" required></textarea>
+
+                    <label>写作风格</label>
+                    <select name="style">
+                        <option value="焦虑" selected>😨 焦虑风</option>
+                        <option value="争议">⚡ 争议风</option>
+                        <option value="中立">📰 中立风</option>
+                        <option value="科普">📖 科普风</option>
+                    </select>
+
+                    <label>
+                        <input type="checkbox" name="auto_publish" value="true">
+                        生成后直接发布
+                    </label>
+
+                    <button type="submit">🚀 批量生成</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 今日热搜 -->
+        <div class="hot-section">
+            <h3>📡 今日热点话题 {{ '(自动抓取)' if hot_topics else '' }}</h3>
+            {% if hot_topics %}
+            <div class="hot-list">
+                {% for item in hot_topics[:20] %}
+                <a href="#" class="hot-item" onclick="document.getElementsByName('topic')[0].value='{{ item.keyword }}'; return false;">
+                    <span class="hot-rank">{{ loop.index }}</span>
+                    <span class="hot-title">{{ item.keyword }}</span>
+                    <span class="hot-source">{{ item.source }}</span>
+                    <span class="hot-score">{{ item.score }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">无法自动抓取热点（可能需要代理或API），你可以手动输入主题。</p>
+            {% endif %}
+        </div>
+
+        <!-- 选词器中的关键词 -->
+        {% if keywords %}
+        <div class="hot-section">
+            <h3>📂 你的关键词库</h3>
+            <div class="kw-list">
+                {% for kw in keywords[:30] %}
+                <a href="#" class="tag" onclick="document.getElementsByName('topic')[0].value='{{ kw.keyword }}'; return false;">
+                    {{ kw.keyword }} <small>({{ kw.hot_score }})</small>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

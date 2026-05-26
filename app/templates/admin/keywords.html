@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}选词器 - {{ site_name }}{% endblock %}
+{% block content %}
+
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <h3>⚙ 管理后台</h3>
+        <a href="/admin/dashboard">📊 总览</a>
+        <a href="/admin/articles">📝 文章管理</a>
+        <a href="/admin/generate">✍️ 生成文章</a>
+        <a href="/admin/keywords" class="active">🔑 选词器</a>
+        <a href="/">🏠 返回首页</a>
+    </aside>
+
+    <div class="admin-main">
+        <h2>🔑 选词器</h2>
+        <p class="text-muted">管理你的关键词库，选好词让 AI 写焦虑文章。热度越高说明这个词用得越多。</p>
+
+        <!-- 添加关键词 -->
+        <div class="add-kw-box">
+            <form method="post" action="/admin/keywords/add" class="inline-form">
+                <input type="text" name="keyword" placeholder="输入关键词" required>
+                <select name="category">
+                    <option value="社会">社会</option>
+                    <option value="科技">科技</option>
+                    <option value="财经">财经</option>
+                    <option value="教育">教育</option>
+                    <option value="医疗">医疗</option>
+                    <option value="民生">民生</option>
+                    <option value="通用" selected>通用</option>
+                </select>
+                <button type="submit">添加</button>
+            </form>
+            <a href="/admin/keywords/refresh" class="btn-link">🔄 从热搜刷新</a>
+        </div>
+
+        <!-- 关键词列表 -->
+        <table class="admin-table">
+            <thead>
+                <tr><th>关键词</th><th>分类</th><th>热度</th><th>状态</th><th>添加时间</th><th>操作</th></tr>
+            </thead>
+            <tbody>
+                {% for kw in keywords %}
+                <tr>
+                    <td><strong>{{ kw.keyword }}</strong></td>
+                    <td>{{ kw.category }}</td>
+                    <td>
+                        <div class="hot-bar-wrap">
+                            <div class="hot-bar" style="width: {{ kw.hot_score if kw.hot_score <= 100 else 100 }}%"></div>
+                            <span>{{ kw.hot_score }}</span>
+                        </div>
+                    </td>
+                    <td>{{ '✅' if kw.is_active else '❌' }}</td>
+                    <td>{{ kw.created_at.strftime('%m-%d') if kw.created_at else '' }}</td>
+                    <td>
+                        <form method="post" action="/admin/keywords/delete/{{ kw.id }}" style="display:inline">
+                            <button type="submit" class="btn-sm btn-red">删除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 关联：去生成文章 -->
+        <div class="quick-gen">
+            <h3>🚀 选好词去生成文章</h3>
+            <p>点击下方的词，直接跳转到生成页面：</p>
+            <div class="kw-list">
+                {% for kw in keywords[:40] %}
+                <a href="/admin/generate" onclick="localStorage.setItem('selectedTopic','{{ kw.keyword }}');" class="tag">{{ kw.keyword }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

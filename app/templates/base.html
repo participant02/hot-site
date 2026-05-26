@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ site_desc or '每日热点资讯' }}">
+    <meta name="keywords" content="热点新闻,今日热搜,最新消息">
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="/" class="logo">{{ site_name }}</a>
+            <nav class="nav">
+                <a href="/">首页</a>
+                <a href="/category/社会">社会</a>
+                <a href="/category/科技">科技</a>
+                <a href="/category/财经">财经</a>
+                <a href="/category/教育">教育</a>
+                <a href="/category/民生">民生</a>
+                <a href="/category/国际">国际</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 顶部广告位 -->
+    {% if baidu_ad %}
+    <div class="ad-banner">{{ baidu_ad|safe }}</div>
+    {% endif %}
+    {% if google_ad and not baidu_ad %}
+    <div class="ad-banner">{{ google_ad|safe }}</div>
+    {% endif %}
+
+    <main class="container main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 底部广告位 -->
+    {% if baidu_ad %}
+    <div class="ad-footer">{{ baidu_ad|safe }}</div>
+    {% endif %}
+
+    <footer class="footer">
+        <div class="container">
+            <p>{{ site_name }} - 每日热点资讯 &copy; 2026</p>
+        </div>
+    </footer>
+</body>
+</html>
